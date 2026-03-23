@@ -16,7 +16,8 @@ Forward text messages to a command service endpoint and reply with the returned 
 - If the service returns JSON with `type: text`, the plugin replies `content`
 - If the service returns JSON with `type: image`:
   - replies with the image URL when `content` is an `http/https` URL
-  - falls back to a text notice when `content` is a base64 `data:image/...` payload
+  - normalizes `data:image/...` payloads by stripping the data URL prefix, matching the awsl-wechat-bot command service behavior
+  - falls back to a text notice because current OpenILink `reply()` only supports text
 
 ## Target Endpoint
 

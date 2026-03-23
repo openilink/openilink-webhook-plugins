@@ -1,8 +1,8 @@
 // ==WebhookPlugin==
 // @name         Command Service Bridge
 // @namespace    github.com/openilink
-// @version      1.2.0
-// @description  Forward WeChat text messages to an HTTP command service and reply with text or image fallback
+// @version      1.2.1
+// @description  Forward WeChat text messages to an HTTP command service and reply with text and normalize image payloads
 // @author       Awsl
 // @license      MIT
 // @homepage     https://github.com/openilink/openilink-webhook-plugins
@@ -60,8 +60,12 @@ function onResponse(ctx) {
       return;
     }
 
-    if (/^data:image\//i.test(content)) {
-      reply("接口返回了一张图片，但当前 OpenILink Webhook 插件 reply() 仅支持文本消息，暂时无法直接回传 base64 图片，御坂如实地报告道。");
+    if (/^data:/i.test(content)) {
+      content = content.indexOf(",") >= 0 ? content.split(",", 2)[1] : content;
+    }
+
+    if (content) {
+      reply("接口返回了图片数据，但当前 OpenILink Webhook 插件 reply() 仅支持文本消息，暂时无法直接回传图片，御坂如实地报告道。");
       return;
     }
 
