@@ -1,6 +1,6 @@
 # Command Service Bridge
 
-Forward text messages to a command service endpoint and reply with the returned content.
+Forward text messages to a command service endpoint and reply with the returned content. Supports text, JSON image payloads, and direct binary HTTP responses.
 
 ## Behavior
 

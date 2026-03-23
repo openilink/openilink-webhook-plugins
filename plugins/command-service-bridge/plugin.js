@@ -1,7 +1,7 @@
 // ==WebhookPlugin==
 // @name         Command Service Bridge
 // @namespace    github.com/openilink
-// @version      1.3.0
+// @version      1.3.1
 // @description  Forward WeChat text messages to an HTTP command service and reply with text and image responses
 // @author       Awsl
 // @license      MIT
@@ -36,6 +36,11 @@ function onResponse(ctx) {
   var text = "";
   var content = "";
   var kind = "";
+
+  if (ctx.res && ctx.res.body === null) {
+    reply({ forward: true });
+    return;
+  }
 
   try {
     data = JSON.parse(ctx.res.body || "{}");
