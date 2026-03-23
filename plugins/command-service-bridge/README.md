@@ -24,3 +24,8 @@ Forward text messages to a command service endpoint and reply with the returned 
 
 - `https://bhwa233-api.vercel.app/api/command`
 
+
+
+## Runtime Notes
+
+- Declares `@timeout 30` to tolerate slower command API responses.

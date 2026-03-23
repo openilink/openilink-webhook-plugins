@@ -1,7 +1,7 @@
 // ==WebhookPlugin==
 // @name         Command Service Bridge
 // @namespace    github.com/openilink
-// @version      1.3.1
+// @version      1.3.2
 // @description  Forward WeChat text messages to an HTTP command service and reply with text and image responses
 // @author       Awsl
 // @license      MIT
@@ -10,6 +10,7 @@
 // @match        text
 // @connect      bhwa233-api.vercel.app
 // @grant        reply,skip
+// @timeout      30
 // ==/WebhookPlugin==
 
 function onRequest(ctx) {
