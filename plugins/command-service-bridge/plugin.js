@@ -1,38 +1,22 @@
 // ==WebhookPlugin==
 // @name         Command Service Bridge
 // @namespace    github.com/openilink
-// @version      1.3.3
-// @description  Forward WeChat text or image messages to an HTTP command service and reply with text and image responses
+// @version      1.3.4
+// @description  Forward WeChat text messages to an HTTP command service and reply with text and image responses
 // @author       Awsl
 // @license      MIT
 // @homepage     https://github.com/openilink/openilink-webhook-plugins
 // @icon         🛰️
-// @match        text,image
+// @match        text
 // @connect      bhwa233-api.vercel.app
 // @grant        reply,skip
 // @timeout      30
 // ==/WebhookPlugin==
 
 function onRequest(ctx) {
-  var command = "";
-  var items = [];
-  var i;
-
-  if (ctx.msg && ctx.msg.content) {
-    command = String(ctx.msg.content);
-  }
+  var command = (ctx.msg && ctx.msg.content) ? String(ctx.msg.content) : "";
 
   command = command.replace(/^\s+|\s+$/g, "");
-
-  if (!command && ctx.msg && ctx.msg.msg_type === "image" && ctx.msg.items && ctx.msg.items.length) {
-    items = ctx.msg.items;
-    for (i = 0; i < items.length; i++) {
-      if (items[i] && items[i].media_url) {
-        command = String(items[i].media_url);
-        break;
-      }
-    }
-  }
 
   if (!command) {
     skip();

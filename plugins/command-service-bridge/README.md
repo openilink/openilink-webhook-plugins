@@ -1,12 +1,11 @@
 # Command Service Bridge
 
-Forward text or image messages to a command service endpoint and reply with the returned content. Supports text, JSON image payloads, and direct binary HTTP responses.
+Forward text messages to a command service endpoint and reply with the returned content. Supports text, JSON image payloads, and direct binary HTTP responses.
 
 ## Behavior
 
-- Accepts text and image messages
+- Accepts text messages only
 - Skips empty text
-- For image messages without text, forwards the first available `media_url` as the command payload
 - Sends JSON payload in the form:
 
 ```json
