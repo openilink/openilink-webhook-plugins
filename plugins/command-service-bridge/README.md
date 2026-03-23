@@ -13,9 +13,15 @@ Forward text messages to a command service endpoint and reply with the returned 
 ```
 
 - Parses the HTTP response body
-- If the service returns JSON with `content`, the plugin replies that content back to the sender
-- Falls back to `message` or raw response body when needed
+- If the service returns JSON with `type: text`, the plugin replies `content`
+- If the service returns JSON with `type: image`:
+  - replies with the image URL when `content` is an `http/https` URL
+  - falls back to a text notice when `content` is a base64 `data:image/...` payload
 
 ## Target Endpoint
 
 - `https://bhwa233-api.vercel.app/api/command`
+
+## Limitation
+
+Current OpenILink Webhook sandbox `reply()` supports text only. It cannot directly send binary image replies.

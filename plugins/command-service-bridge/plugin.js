@@ -1,8 +1,8 @@
 // ==WebhookPlugin==
 // @name         Command Service Bridge
 // @namespace    github.com/openilink
-// @version      1.1.0
-// @description  Forward WeChat text messages to an HTTP command service and reply with the returned content
+// @version      1.2.0
+// @description  Forward WeChat text messages to an HTTP command service and reply with text or image fallback
 // @author       Awsl
 // @license      MIT
 // @homepage     https://github.com/openilink/openilink-webhook-plugins
@@ -34,6 +34,8 @@ function onRequest(ctx) {
 function onResponse(ctx) {
   var data;
   var text = "";
+  var content = "";
+  var kind = "";
 
   try {
     data = JSON.parse(ctx.res.body || "{}");
@@ -41,22 +43,42 @@ function onResponse(ctx) {
     data = null;
   }
 
-  if (data && typeof data.content === "string") {
-    text = data.content;
-  } else if (data && typeof data.message === "string") {
+  if (!data) {
+    if (ctx.res && typeof ctx.res.body === "string") {
+      text = String(ctx.res.body).replace(/^\s+|\s+$/g, "");
+      if (text) reply(text);
+    }
+    return;
+  }
+
+  kind = typeof data.type === "string" ? data.type : "text";
+  content = typeof data.content === "string" ? data.content : "";
+
+  if (kind === "image") {
+    if (/^https?:\/\//i.test(content)) {
+      reply(content);
+      return;
+    }
+
+    if (/^data:image\//i.test(content)) {
+      reply("接口返回了一张图片，但当前 OpenILink Webhook 插件 reply() 仅支持文本消息，暂时无法直接回传 base64 图片，御坂如实地报告道。");
+      return;
+    }
+
+    reply("接口返回了图片内容，但当前插件运行时无法直接发送该图片格式，御坂如实地报告道。");
+    return;
+  }
+
+  if (content) {
+    text = content;
+  } else if (typeof data.message === "string") {
     text = data.message;
   } else if (ctx.res && typeof ctx.res.body === "string") {
     text = ctx.res.body;
   }
 
-  if (!text) {
-    return;
+  text = String(text || "").replace(/^\s+|\s+$/g, "");
+  if (text) {
+    reply(text);
   }
-
-  text = String(text).replace(/^\s+|\s+$/g, "");
-  if (!text) {
-    return;
-  }
-
-  reply(text);
 }
